@@ -290,10 +290,414 @@ numbers #=> [1,3,5,7,9]
 (1..15).step(3){ |n| numbers << n }
 numbers #=>[1,4,7,10,13]
 
-#------ 4.6 ------
+#------ 4.6 RGBテスト------
 
-to_hex(0,0,0) 
+to_hex(0,0,0)
 
+#------ 4.7  配列についてもっと詳しく------
+
+a = [1,2,3,4,5]
+a[1,3 ] #=> [2,3,4]
+
+a = [1,2,3,4,5]
+a.value_at(0,2,4) #=>[1,3,5]
+
+a = [1,2,3]
+#最後の要素を取得する
+a[a.size - 1] #=> 3
+
+a = [1,2,3]
+a[-1] #=> -3
+a[-2,2]
+
+a[-2,2] #=> [2,3]
+
+a =[1,2,3]
+a.last #=> 3
+a.last(2) #=>[2,3]
+a.first #=>1
+a.first(2) #=> [1,2]
+
+a = [1,2,3]
+a[-3] = -10 #=>[-10,2,3]
+
+#指定可能な負の値よりも小さくなるとエラーが発生する
+a[-4] = 0 #=>indexEroor
+
+a = [1,2,3,4,5]
+#2つ目から3余所分を100で置き換える
+a[1,3] = 100
+a #=>[1,100,5]
+
+a = []
+a.push(1) #=>[1]
+a.push(2,3) #=>[1.2,3]
+
+a = [1,2,3,1,2,3]
+#洗いが2である要素を削除する
+a.delete(2) #=>[1,3,1,3]
+
+#存在しない要素を削除しようとするとnilが帰ってくる
+a.delete(5) #=>nil
+a
+
+a = [1]
+b = [2,3]
+
+a.contact(b) #=>[1,2,3]
+#aは破壊される（破壊的）
+a #=> [1,2,3]
+# bは破壊されない
+b #=> [2,3]
+
+#+を使うと素の配列を変更せずに、新しい配列を作成する
+a = [1]
+b = [2,3]
+a + b #=> [1,2,3]
+
+#aもbも変更されない（破壊的）
+a #=>[1]
+b #=>[2,3]
+
+#配列を連結させる時は基本的には＋が良い
+
+a = [1,2,3]
+b = [3,4,5]
+a | b #=>[1,2,3,4,5]
+#|,-,&を使って和集合、差酒豪、積集合を求めつことができます
+#いずれも素の配列は破壊しない
+
+
+#｜は和集合を求める演算子です。2里の配列の要素を全てて集めて重複しないようにして返します。
+a = [1,2,3]
+b = [3,4,5]
+a - b #=>[1,2]
+
+#-は差集合を求める演算子。左の配列から右の配列に含まれる要素を取り除く
+a = [1,2,3]
+b = [3,4,5]
+a & b #=>3
+
+#&は積集合を求める演算子、2つの配列に共通する要素を返す。
+a = [1,2,3]
+b = [3,4,5]
+a & b #=>[3]
+
+#Rubyには効率的に集合を扱えるSetクラスもあり本格的な集合演算をする場合は配列よりもD Setクラスを使う方が良い。
+
+require 'set'
+
+a = Set.new([1,2,3])
+b = Set.new([3,4,5])
+a | b #=>  Set: {1,2,3,4,5 }
+a - b #=>  Ser: {1,2}
+a & b #=>  Set: {3}
+
+#多重代入で残りの前要素を配列として受けとる
+e,f = 100,200,300
+e #=> 100
+f #=> 200
+
+e, *f  = 100,200,300
+e #=> 100
+f #=> [200,300]
+
+#1つの配列を複数の引数として展開する
+a = []
+a.push(1) #=>[1]
+a.push(2,3) #=>[1,2,3]
+
+a = []
+b = [2,3]
+a.push(1) #=> [1]
+a.push(b) #=> [1,[2,3]]
+
+a = []
+b = [2,3]
+a.push(1)
+a.push(*b) #=>[1,2,3]
+
+#メソッドの可変調変数
+
+def greeting(*name)
+	"#{names.join('と')}、こんにちは！"
+end
+
+greeting('田中さん') #=> 田中さん、こんにちは！
+greeting('田中さん','鈴木さん') #=>田中さんと鈴木さん、こんにちは！
+greeting('田中さん','鈴木さん','佐藤さん')#田中さんと鈴木さんと、佐藤さん、こんにちは！
+
+# *で配列同士を非破壊的に連結する
+a = [1,2,3]
+
+#[]の中にそのまま配列を置くと配列の配列のなる
+[a] #{=> [[1,2,3]]
+
+# *付きで配列を置くと、展開されて別々の要素になる
+[*a] #=>[1,2,3]
+
+a = [1,2,3]
+[-1,0.*a,4,5]
+a =[1,2,3]
+[-1,0] + a + [4, 5]
+
+a = [1, 2, 5]
+[-1,0]+ a + [4, 5]
+#=> [-1, 0, 1, 2, 3, 4, 5]
+
+[1, 2, 3] == [1, 2, 3] #=>true
+
+['apple', 'melon', 'orange']
+
+%w!apple melon orange!
+
+%W(apple melon orange)
+
+%w(
+	apple
+	melon
+	orange
+	)
+
+%w(big\ apple small\ melon orange)
+
+prefix = 'This is'
+%W(#{prefix}\ an\ apple small\ melon","orange")
+
+'Ruby'.chars #=> ["R", "u", "b ","y"]
+'Ruby,Java,Perl,PHP'.split(',') #=> ['Ruby',"Java","Perl","PHP"]
+
+a = Array.new
+
+a = Array.new(5)
+
+#要素が5つの配列を作成する
+a = Array.new(5)
+a #=>[nil,nil,nil,nil,nil]
+
+#要素が5つで0
+a = Array.new(5,0)
+
+a = Array.new(10){|n| n % 3 +1 }
+a #=> [1,2,3,1,2,3,1,2,3,1]
+
+a = Array.new(5, 'defalt')
+
+str = a[0]
+str #=> "defalt"
+
+str.update!
+str #=> "DEFALT"
+
+a #=> ["DEAULT","DEFAULT","DEFAULT"]
+
+a = Array.new(5) {'default'}
+
+str = a[0]
+str #=> default
+
+str.upcase!
+str
+
+a #=> ["DEFALT","default"...]
+
+a = Array.new(5, 0)
+a #=>[0,0,0,0,0]
+
+n = a [0]
+n #=> 0
+
+#数値だと破壊的な変更はできない
+#n.negative!
+
+a = 'abcde'
+a[2] "c"
+a[1..3] #bcd
+a[-1] #e
+
+a[0] = 'x'
+a #=>"xbcde"
+
+a[1,3] = 'Y'
+a
+
+a << 'PQR'
+a #=> "XYePQR"
+
+#------ 4.8 ブロックについtrもっと詳しく ------
+
+fruits = ['apple', 'orange','melon']
+ #ブロック引数のiには0,1,2...と要素の添え字が入る
+	fruits.each_with_index { |fruit, i| puts "#{i}: #{fruit}" }
+	# 0: apple
+	# 1: orange
+	# 2: melon
+
+
+fruits = ['apple', 'orange','melon']
+#mapとして処理しつつ、添え字も受け取る
+fruits.map.with_index {|fruit, i| "#{i}: #{fruit}"}
+#=> ["0: apple,1: orange,2:,melon"]
+
+fruits =['apple','orange','melon']
+#名前にaを含み、なおかつ添字が奇数である要素を削除する
+fruits.delete_if.with_index { |fruit, i| fruit.include?('a') && i.odd?}
+
+fruits = ['apple','orange','melon']
+
+
+fruits = ['apple','orange','melon']
+
+#eachで繰り返しつつ、1から始まる添え字を取得する
+fruits.each.with_index(1) {|fruit, i|puts "#{i}: #{fruit}"}
+
+
+#mapで処理しつつ、10から始まる添え字を取得する
+fruits.map.with_index(10) { |fruit,i| " #{i}: #{fruit} "}
+
+dimentions = [
+	[10,20],
+	[30,40],
+	[50,60],
+]
+
+areas = []
+
+dimensions.each do | dimention |
+	length = dimension[0]
+	width = dimention[1]
+	areas << length * width
+end
+areas #=> [200,1200,3000]
+
+dimentions = [
+	[10,20],
+	[30,40],
+	[50,60],
+]
+
+areas = []
+dimentions.each do |length, width|
+	areas << length * width
+end
+areas #=>[200, 1200, 3000]
+
+demensions = [
+[10,20],
+[30,40],
+[50,60],
+]
+
+areas = []
+dimensions.each do |length, width|
+	areas << length * width
+end
+areas
+
+numbers = [1,2,3,4]
+sum = 0
+
+#ブロックの外にあるsumとは別物の変数sumを用意
+numbers.each so |n; sum|
+ #別物のsumを10で初期化し、ブロック引き数の値を加算する
+sum =10
+sum += n
+#加算した値をターミナルに表示する
+p sum 
+end
+
+File .open("./sample.txt","w")do |file|
+	file.puts("1行目のテキストです。")
+	file.puts("2行目のテキストです。")
+	file.puts("3行目のテキストです。")
+end
+
+a = [1,2,3]
+
+# ブロックをわた際時は指定した値が見つからないとNilが返る
+a.delete(100)
+
+a.delete(100) do
+	'NG'
+end
+ #do ..end よりも{}の方が結合度が強い
+
+a.delete 100 { 'NG'} #=> Error
+
+a.delete(100) { 'NG' } #=> "NG"
+
+names = ['田中', '鈴木', '佐藤']
+san_names = names.map { |name| "#{name}さん"} #=>["田中さん","鈴木さん","佐藤さん"]
+san_names.join('と')
+ #=>"田中さんと鈴木さんと佐藤さん"
+
+names = ['田中','鈴木', '佐藤']
+names.map { |name| "#{name}さん" }.join('と')
+#=>"田中さんと鈴木さんと佐藤さん"
+
+names = ['田中','鈴木', '佐藤']
+names.map do |name|
+	"#{name}さん"
+end.join('と')
+#=>#=>"田中さんと鈴木さんと佐藤さん"
+
+#------ 4.9 様々な繰り返し処理------
+
+sum = 0
+#処理を5回繰り返す。nには0,1,2,3,4が入る
+5.times {|n| sum += n }
+sum #=> 10
+
+sum = 0
+#不要な場合はブロック省略可能
+5.times {sum += 1}
+sum
+
+a = []
+10.upto(14){|n| a << n }
+a #=> [10,11,12,13,14]
+
+a = []
+14.downto(10){|n| a << n }
+a #=> [14,13,12,11,10]
+
+a = []
+10.upto(15){|n| a << n }
+
+a = []
+1.step(10,2){ |n| a << n }
+a #=> [1,3,5,7,9]
+
+a = []
+10.step(1, -2) { |n| a << n }
+a #=> [10,8,6,4,2]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+[a] #=>[[1,2,3]]
 
 
 
