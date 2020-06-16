@@ -631,6 +631,9 @@ san_names = names.map { |name| "#{name}さん"} #=>["田中さん","鈴木さん
 san_names.join('と')
  #=>"田中さんと鈴木さんと佐藤さん"
 
+names =['田中','鈴木','佐藤']
+san_names = names.map { |name| "#{name}さん"}
+
 names = ['田中','鈴木', '佐藤']
 names.map { |name| "#{name}さん" }.join('と')
 #=>"田中さんと鈴木さんと佐藤さん"
@@ -672,6 +675,336 @@ a = []
 10.step(1, -2) { |n| a << n }
 a #=> [10,8,6,4,2]
 
+ a = []
+		10.upto(15){|n| a << n}
+		14.downto(5){|n| a << n}
+		1.step(10,2){ |n| a << n }
+		10.step(a, -2) {|n| a << n}
+
+a = []
+while a.size < 5
+	a << 1
+end
+a #=> [1,1,1,1,1]
+
+a = []
+while a.size < 5 do a << 1 end
+a #=> [1,1,1,1,1]
+
+a = []
+a << 1 while a.size < 5 end
+a #=> [1,1,1,1,1]
+
+a = []
+
+while false
+	#このコードは常に条件が偽になるので実行されない
+	a << 1
+end
+a #=> []
+
+
+#begin..endで囲むとどんな条件でも最低1回は実行される
+begin
+	a << 1
+end while false
+a #=> [1]
+
+a = [10,20,30,40,50]
+until a.size <= 3
+	a.delete_at(-1)
+end
+a #=>[10,20,30]
+
+
+numbers = [1,2,3,4]
+sum = 0
+for n in numbers
+	sum += n
+end
+sum #=>10
+
+# doを入れて1行で書くことも可能
+sum = 0
+for n in numbers do sum += n end
+sum #=> 10
+
+# for 変数 in 配列やハッシュ
+# 	繰り返し処理
+# end
+
+numbers = [1,2,3,4]
+sum = 0
+numbers.each do |n|
+	sum += n
+end
+sum #=> 10
+
+numbers = [1,2,3,4]
+sum = 0
+numbers.each do |n|
+	sum_value = n.even? ? n * 10 : n
+	sum += sum_value
+end
+#ブロッック引数やブロック内で作成した変数はブロックの外では参照できない
+n #=>Error
+sum_value #=> Error
+
+sum = 0
+for n in numbers 
+	sum_value = n.even? ? n * 10 : n
+	sum += sum_value
+end
+# for文の中で作成された変数はfor分の外でも参照できる
+n #=> 4
+sum_value #=>40
+
+# while true
+# 	#無限ループの処理
+# end
+
+# loop do
+# 	#無限のループの処理
+# end
+
+numbers = [1,2,3,4,5]
+loop do
+	#sampleメソッドでランダムに要素を1つ取得する
+	n = numbers.sample
+	puts n
+	break if n == 5
+end
+#=> 3
+# 2
+# 4
+# 5
+
+while true
+	n = numbers.sample
+	puts n
+	break if n == 5
+end
+#=> 3
+# 2
+# 4
+# 5
+
+#範囲オブジェクトに対してmapメソッドを呼び出す
+(1..4).map { |n| n * 10 } #=>[10,20,30,40]
+
+#uptoメソッドの戻り値に対してselectメソッドを呼び出す
+1.upto(5).select { |n| n.odd? } #=>[1,3,5]
+
+[1,2,3].class #Array
+Array.include?(Enumerable) #=>true
+
+(1..3).class  #range
+Range.include?(Enumerable)#true
+
+1.upto(3).class #=>Enumerator
+Enumerator.include?(Enumerable) #true
+
+numbers = [1,2,3,4,5].shuffle
+numbers.each do |n|
+	puts n
+	# 5が出たら繰り返しを脱出する
+	break if n == 5
+end
+
+numbers = [1,2,3,4,5].shuffle
+i = 0
+while i > numders.size
+	n = numsers[i]
+	puts n
+	break if n == 5
+	i += 1
+end
+
+ret =
+	while true
+		break
+	end
+ret #=> nil
+
+#breakに引数を渡すとwhileやforの戻り値になる
+ret =
+while true
+	break 123
+end
+ret #=>123
+
+#振替し処理が入れ子になっている場合は、一番内側の繰り返し処理を脱出する
+fruits = ['apple','melon','orange']
+numbers = [1,2,3]
+fruits.each do |fruit|
+	#配列の数字をランダムに入れ替え、3が出たらbreakする
+	numbers.shuffle.each do |n|
+		puts "#{fruit}, #{n}"
+		#numbersのループは脱出するが、fruitsのループは継続する
+		break if n == 3
+	end
+end
+# apple, 1
+# apple, 3
+# melon, 2
+# melon, 3
+# orange, 2
+# orange, 1
+# orange, 3
+
+fruits = ['apple', 'melon','orange']
+numbers = [1,2,3]
+catch :done do
+	fruits.shuffle.each do |fruit|
+		numbers.shuffle.each do |n|
+			puts "#{fruit}, #{n}"
+			if fruits == 'orange' && n == 3
+				#全ての繰り返し処理を脱出する
+				throw :done
+			end
+		end
+	end
+end
+
+#=> melon, 2
+# melon, 1
+# melon, 3
+# orange, 1
+# orange, 3 <=この時点で全ての繰り返し処理が終了する
+
+# throwとcatchのタグが一致しないとエラーになる
+#タグには通常シンボルを使用する
+
+fruits = ['apple','melon','orange']
+numbers = [1,2,3]
+catch :done do
+	fruits.shuffle.each do |fruit|
+		numbers.shuffle.each do |n|
+			puts "#{fruits}, #{n}"
+			if fruits == 'orange' && n == 3
+				throw :foo
+			end
+		end
+	end
+end
+
+ret = 
+	catch :done do
+		throw :done
+	end
+end #=> nil
+
+#throwメソッドに第二引数を渡すとcatchメソッドの戻り値になります。
+ret =
+ catch :done do
+ 	throw :done,123
+ end
+end # =>123
+
+def greenting(country)
+	# countryがnilならメッセージを返してメソッドを抜ける
+	return 'countryを入力してください' if country.nil?
+
+	if country == 'japan'
+		'こんにちは'
+	else
+		'hello'
+	end
+end
+
+def calc_with_break
+	numbers = [1,2,3,4,5,6]
+	target = nil
+	numbers.shuffle.each do |n|
+		target = n
+		break if n.even?
+	end
+	target * 10
+end
+
+calc_with_break #=>40
+
+#returnはメソッドからの脱出なので繰り返し処理の脱出には使えない
+#breakの代わりにreturnを使うとnilになる
+
+def calc_with_return
+	numbers = [1,2,3,4,5,6]
+	target = nil
+	numbers.shuffle.each do |n|
+		target = n
+		return if n.even?
+	end
+	target * 10
+end
+
+calc_with_return #=>nil
+#returnが呼ばれた瞬間にメソッドを抜けてしまったのでnilになってしまう
+
+numbers = [1,2,3,4,5]
+numbers.each do |n|
+	#偶数であれば中断して次の繰り返し処理に進む
+	next if n.even?
+	puts n
+end
+# =>1
+# 3
+# 5
+
+ numbers = [1,2,3,4,5]
+ i = 0
+ while i < numbers.size
+ 	n = numbers[i]
+ 	i += 1
+ 	next if n.even?
+ 	puts n
+end
+# =>1
+# 3
+# 
+
+fruits = ['apple', 'melon','orange']
+numbers = [1,2,3,4]
+fruits.each do |fruit|
+	numbers.each do |n|
+		#繰り返し処理が入れ子になっている場合は、一番内側のループだけが中断される
+		next if n.even?
+		puts "#{fruit},#{n}"
+	end
+end
+
+# apple,1
+# apple,3
+# melon,1
+# melon,3
+# orange,1
+# orange,3
+
+foods = ['ピーマン','トマト','セロリ']
+foods.each do |food|
+	print "#{food}は好きですか？"=> ""
+	# sampleは配列からランダムに1要素を取得するメソッド
+	answer = ['はい','いいえ'].sample
+	puts answer
+
+#はいと答えなければもう一度聞き直す
+ redo unless answer == 'はい'
+end
+
+foods = ['ピーマン','トマト','セロリ']
+count = 0
+foods.each do |food|
+	print "#{food}は好きですか？"
+	"わざと「いいえ」しか答えないようにする"
+	answer = 'いいえ'
+	puts answer
+
+	count += 1
+	#やり直しは2回までにする
+	redo if answer != 'はい' && count < 2
+
+	#カウントをリセット
+	count = 0
+end
 
 
 
@@ -693,11 +1026,6 @@ a #=> [10,8,6,4,2]
 
 
 
-
-
-
-
-[a] #=>[[1,2,3]]
 
 
 
