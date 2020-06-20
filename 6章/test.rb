@@ -79,28 +79,90 @@
 # <option value="gb">ゲームボーイ</option>
 # </select>
 
-html = <<-HTML
-<select name="game_console">
-<option value="none"></option>
-<option value="wii_u" selected>Wii U</option>
-<option value="ps4">プレステ4</option>
-<option value="gb">ゲームボーイ</option>
-HTML
+# html = <<-HTML
+# <select name="game_console">
+# <option value="none"></option>
+# <option value="wii_u" selected>Wii U</option>
+# <option value="ps4">プレステ4</option>
+# <option value="gb">ゲームボーイ</option>
+# HTML
 
-replaced = html.gsub(/<option value="(\w+)"(?: selected)?>(.*)><\/option>/, '\1,\2')
-puts replaced
+# replaced = html.gsub(/<option value="(\w+)"(?: selected)?>(.*)><\/option>/, '\1,\2')
+# puts replaced
 
-html = <<-HTML
-<select name="game_console">
-<option value="none"></option>
-<option value="wii_u" selected>Wii U</option>
-<option value="ps4">プレステ4</option>
-<option value="gb">ゲームボーイ</option>
-HTML
+# html = <<-HTML
+# <select name="game_console">
+# <option value="none"></option>
+# <option value="wii_u" selected>Wii U</option>
+# <option value="ps4">プレステ4</option>
+# <option value="gb">ゲームボーイ</option>
+# HTML
 
-replaced = html.gsub(/<option value="(\w+)"(?: selected)?>(.*)<\/option>/, '\1,\2')
- puts replaced
+# replaced = html.gsub(/<option value="(\w+)"(?: selected)?>(.*)<\/option>/, '\1,\2')
+#  puts replaced
 
+# text = <<-TEXT
+# type=zip; filename=users.zip; size=1024;
+# type=xml; filename=posts.xml; size=2048;
+# TEXT
+
+# p text.scan(/(?<=filename=)[^;]+/)
+
+# #肯定の後読みを行わない場合
+# text = <<-TEXT
+# type=zip; filename=users.zip; size=1024;
+# type=xml; filename=posts.xml; size=2048;
+# TEXT
+
+# p text.scan(/filename=[^;]+/).map {|s| s.split('=').last}
+
+# text = <<-TEXT
+# John:guitar, George:guitar, Paul:bass, Ringo:drum
+# Freddie:vocal, Brian:guitar, John:bass, Roger:drum
+# TEXT
+
+# p text.scan(/\w+(?=:bass)/)
+
+# text = <<-TEXT
+# 東京都
+# 千葉県
+# 神奈川県
+# 埼玉都
+# TEXT
+
+# p text.scan(/(?<!東京)都/)
+
+# text = <<-TEXT
+# <a href="http://google.com">http://google.com</a>
+# <a href="http://yahoo.co.jp">ヤフー</a>
+# <a href="http://facebook.com">http://facebook.com</a>
+# TEXT
+
+# p text.scan(/<a href="(.+?)">\1<\/a>/)
+
+# text = <<-TEXT
+# You say yes. - @jnchito 8s
+# I say no. - @BarackObama 12m
+# You say stop. - @dhh 7h
+# I say go go go. - @ladygaga Feb 20
+# Hello, goodbye. - @BillGates 11 Apr 2015
+# TEXT
+
+# p text.scan(/^(.*) - (@\w+) (\d+[smh]|(?:\d+ )?[A-Z][a-z]{2} \d+)/)
+
+text = '私の誕生日は1977年7月17日です。'
+m = /(\d+)年(\d+)月(\d+)日/.match(text)
+p m[1]
+p m[2]
+p m[3]
+
+text = '私の誕生日は1977年7月17日です。'
+m = /(\d+)年(\d+)月(\d+)日/.match(text)
+p m[0]
+p m[1]
+p m[2,2]
+p m[-1]
+p m[1..3]
 
 
 

@@ -212,6 +212,72 @@ replaced = html.gsub(/<option value="(\w+)"(?: selected)?>(.*)><\/option>/, '\1,
 # *?や+?にすると最短マッチを返す
 
 
+#空行に含まれる無駄なスペースやタブを削除する
+text = <<-TEXT
+def hello(name)
+  puts "Hello, \#{name}!"
+end
+
+hello('Alice')
+     
+hello('Bob')
+	
+hello('Carol')
+TEXT
+
+puts text.gsub(/^[ \t]+$/, '')
+#^は行頭、$は行末、\tはタブ文字
+
+# def hello(name)
+#   puts "Hello, #{name}!"
+# end
+# 
+# hello('Alice')
+# 
+# hello('Bob')
+# 
+# hello('Carol')
 
 
+#ログから特定の行を削除する
+Feb 14 07:33:02 app/web.1:  Completed 302 Found ...
+Feb 14 07:36:46 heroku/api:  Starting process ...
+Feb 14 07:36:50 heroku/scheduler.7625:  Starting ...
+Feb 14 07:36:50 heroku/scheduler.7625:  State ...
+Feb 14 07:36:54 heroku/router:  at=info method=...
+Feb 14 07:36:54 app/web.1:  Started HEAD "/" ...
+Feb 14 07:36:54 app/web.1:  Completed 200 ...
 
+#(|)でorの意味を持つ
+^.+heroku\/(api|scheduler).+$
+
+#--- ^は場所によって意味が変わる---
+
+# [^AB]はAでもなくBでもない1文字
+# ABCDEF
+# !@#$%^&*
+#=> CDEF!@#$%^&*
+
+#[AB^]はAまたはBまたは^のいずれか1文字
+# ABCDEF
+# !@#$%^&*
+#=> AB^
+
+# ^.は行頭に来る1文字
+# ABCDEF
+# !@#$%^&*
+#=> A ！
+
+# /^は^という文字を検索したい時に使う
+# ABCDEF
+# !@#$%^&*
+#=> ^
+
+#---まとめ ---
+# ^は行頭を表す
+# $は行末を表す
+# \tはタブ文字を表す
+# \n は改行文字を表す
+# \sは空白文字（スペース、タブ、改行文字）を表す
+# ABC|DEFは、文字列のor条件を表す
+# ^は状況や使い方によって意味が異なる
