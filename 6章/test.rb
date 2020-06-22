@@ -150,20 +150,95 @@
 
 # p text.scan(/^(.*) - (@\w+) (\d+[smh]|(?:\d+ )?[A-Z][a-z]{2} \d+)/)
 
-text = '私の誕生日は1977年7月17日です。'
-m = /(\d+)年(\d+)月(\d+)日/.match(text)
-p m[1]
-p m[2]
-p m[3]
+# text = '私の誕生日は1977年7月17日です。'
+# m = /(\d+)年(\d+)月(\d+)日/.match(text)
+# p m[1]
+# p m[2]
+# p m[3]
+
+# text = '私の誕生日は1977年7月17日です。'
+# m = /(\d+)年(\d+)月(\d+)日/.match(text)
+# p m[0]
+# p m[1]
+# p m[2,2]
+# p m[-1]
+# p m[1..3]
+
+# text ='私の誕生日は1977年7月17日です。'
+# m = /(?<year>\d+)年(?<month>\d+)月(?<day>\d+)日/.match(text)
+
+# p m[:year]
+# p m[:month]
+# p m[:day]
+# p m[2]
+
+# text = '私の誕生日は1977年7月17日です。'
+# #キャプチャの名前がそのままローカル変数に割り当てられる
+# if /(?<year>\d+)年(?<month>\d+)月(?<day>\d+)日/=~ text
+# 	puts "#{year}/#{month}/#{day}"
+# end
+
+# p '1997年7月17日 2016年12月31日'.scan(/(\d+)年(\d+)月(\d+)日/)
+
+# p'1997年7月17日 2016年12月31日'.scan(/(?:\d+)年(?:\d+)月(?:\d+)日/)
+
+# p '1997年7月17日 2016年12月31日'.scan(/\d+年\d+月\d+日/)
+
+# text = '123,456-789'
+# p text.gsub(',',':') #=> "123:456-789"
+# p text.gsub(/,|-/, ':') #=>123:456:789
+
+# text2 = '私の誕生日は1977年7月17日です。'
+# p text2.gsub(/(\d+)年(\d+)月(\d+)日/,'\1-\2-\3')
+
+# text = "私の誕生日は1977年7月17日です。"
+# p text.gsub(
+# 	/(?<year>\d+)年(?<month>\d+)月(?<day>\d+)日/,
+# 	'\k<year>-\k<month>-\k<day>'
+# 	)
+
+
+# text = '123,456-789'
+# hash {','=>':','-' => '/' }
+# p text.gsub(/,|-/, hash)
+
+
+# text = '123,456-789'
+# p text.gsub(/,|-/) {|matched| matched == ',' ? ':' : '/' }
+
+# text = '123,456-789'
+# text.gsub!(/,|-/,':')
+# p text #=> "123:456:789"
+
+# text = '03-1234-5678'
+
+# case text
+# when /^\d{3}-\d{4}$/
+# 	puts '郵便番号です'
+# when /^\d{4}\/\d{1,2}\/\d{1,2}$/
+# 	puts '日付です'
+# when /^\d+-\d+-\d+$/
+# 	puts '電話番号です'
+# end
+
+# p 'HELLO' =~ /hello/i #=0
+# p "Hello\nBye" =~ /Hello.Bye/m #=> 0
 
 text = '私の誕生日は1977年7月17日です。'
-m = /(\d+)年(\d+)月(\d+)日/.match(text)
-p m[0]
-p m[1]
-p m[2,2]
-p m[-1]
-p m[1..3]
+text =~ /(\d+)年(\d+)月(\d+)日/
 
+# p $~
 
+# p $&
+# p $1
+# p $2
+# p $3
+# p $+
+
+p Regexp.last_match
+p Regexp.last_match(1)
+p Regexp.last_match(2)
+p Regexp.last_match(3)
+p Regexp.last_match(-1)
 
 
