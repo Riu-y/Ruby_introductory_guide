@@ -306,18 +306,372 @@
 # #=> "#<DVD:0x00007fa0e7915638>"
 
 
-class User
-	def hello
-		#name メソッドはprivateなのでselfをつけるtエラーになる
-		"Hello, I am #{self.name}"
-	end
+# class User
+# 	def hello
+# 		#name メソッドはprivateなのでselfをつけるtエラーになる
+# 		"Hello, I am #{self.name}"
+# 	end
 
-	private
-	def name
-		('Alice')
-	end
+# 	private
+# 	def name
+# 		('Alice')
+# 	end
+# end
+# user = User.new
+# user.hello #=> Error
+
+# class User
+# 	class << self
+# 		private
+# 		def hello
+
+# 			'Hello'
+# 		end
+# 	end
+# end
+
+# class User
+# 	def self.hello
+# 		'hello'
+# 	end
+# 	private_class_method :hello
+# end
+# User.hello
+
+
+#後からメソッドの公開レベルを変更する場合
+# class User
+# 	def foo
+# 		'foo'
+# 	end
+
+# 	def bar
+# 		'bar'
+# 	end
+
+# 	#fooとbarをprivateメソッドに変更する
+# 	private :foo, :bar
+
+# 	#bazはpublicメソッド
+# 	def baz
+# 		'baz'
+# 	end
+# end
+
+# user = User.new
+# p user.baz #=> "baz"
+
+# class User
+# 	attr_reader :name
+
+# 	def initialize(name, weight)
+# 		@name = name
+# 		@weight = weight
+# 	end
+
+# 	def heavier_than?(other_user)
+# 		other_user.weight < @weight
+# 	end
+
+# 	protected
+
+# 	def weight
+# 		@weight
+# 	end
+# end
+# alice = User.new('Alice',50)
+# bob = User.new('Bob',60)
+# p bob.heavier_than?(alice)
+
+# class Product
+# 	@name = 'Product'
+# 	def self.name
+# 		@name
+# 	end
+# 	def initialize(name)
+# 		@name = name
+# 	end
+
+# 	def name
+# 		@name
+# 	end
+# end
+# Product.name #=> "Product"
+#  product = Product.new('A great movie')
+# p product.name
+# p Product.name
+
+# class Product
+# 	attr_accessor :name, :author
+# #スーパークラス
+# 	#クラスインスタンス変数
+# 	@name = 'Product'
+# 	#クラスインスタンス変数
+# 	def self.name
+# 		@name
+# 	end
+# 	#インスタンス変数
+# 	def initialize(name, author)
+# 		@name = name
+# 		@author = author
+# 	end
+# 	#インスタンス変数
+# 	def name
+# 		@name
+# 	end
+# end
+# #サブクラス
+# 	class DVD < Product
+# 		#クラスインスタンス変数
+# 		@name = 'DVD'
+# 	#クラスインスタンス変数
+# 	def self.name
+# 		#クラスインスタンス変数を参照
+# 		@name
+# 	end
+# 	#クラスインスタンス変数
+# 	def upcase_name
+# 		#インスタンス変数を参照
+# 		@name.upcase
+# 	end
+# end
+
+# Product.name #=> "Product"
+# DVD.name #=> DVD
+
+# product = Product.new('A great movie','Bob')
+# p product.name #=> "A great"movie"
+
+# dvd = DVD.new('An awesome film','Tony')
+# p dvd.name  #=> "An awesome FILM"
+# p dvd
+# p dvd.upcase_name #=> AN AWESOME FILM
+
+# prodect = Product.new('This is product','Bob')
+# p product.name
+
+# p Product.name #=> "Product"
+# p DVD.name #=> "DVD"
+
+#グローバル変数の宣言と値の代入
+# $program_name = 'Awesome program'
+
+# #グローバル変数に依存するクラス
+# class Program
+# 	def initialize(name)
+# 		$program_name = name
+# 	end
+
+# 	def self.name
+# 		$program_name
+# 	end
+
+# 	def name
+# 		$program_name
+# 	end
+# end
+
+# #$program_nameは既に名前が代入されている
+# p Program.name #=>"Awesome program"
+
+# program = Program.new('Super program')
+# p program.name #=> "Super program"
+
+# #Program.newのタイミングで$program_nameが”Super program"に変更される
+# p Program.name #=> "Super program"
+# p$program_name #=> "Super program"
+
+# class User
+# 	class BloodType
+# 		attr_reader :type
+
+# 		def initialize(type)
+# 			@type = type
+# 		end
+# 	end
+# end
+
+# blood_type = User::BloodType.new('B')
+# p blood_type.type
+
+# class User
+# 	# =で終わるメソッドを定義する
+# 	def name=(value)
+# 		@name = value
+# 	end
+# end
+
+# user = User.new
+# #変数に代入する様な形式でname=メソッドを呼び出せる
+# user.name = 'Alice'
+# p user
+
+# class Product
+# 	attr_reader :code, :name
+
+# 	def initialize(code,name)
+# 		@code = code
+# 		@name = name
+# 	end
+	
+# 	#以下のコードがないとスーパークラスのObjectクラスでは、==はobject_idが一致したときにtrueを返すという仕様になっているためfalseで返してしまう
+# 	def ==(other)
+# 		if other.is_a?(Product)
+# 			#もし商品コードが一致すれば同じProductとみなす
+# 			code == other.code
+# 		else
+# 			#oherがProductでなければ常にfalse
+# 			false
+# 		end
+# 	end
+# end
+
+# #aとcが同じ商品コード
+# a = Product.new('A-0001', 'A great movie')
+# b = Product.new('B-0001', 'A awesome movie')
+# c = Product.new('A-0001', 'A great movie')
+
+# # ==がこの様に動作して欲しい
+# p a == b #=>false
+# p a == c #=>true
+
+# a = 'japan'
+# b = 'japan'
+# a.eql?(b)
+# p a.hash
+# p b.hash
+
+# c = 1
+# d = 1.0
+# c.eql?(d)
+# p c.hash
+# p d.hash
+
+
+# value = [1,2,3]
+
+# case value
+# when String
+# 	puts '文字列です'
+# when Array
+# 	puts '配列です'
+# when Hash
+# 	puts 'ハッシュです'
+# end
+# #=>配列です
+
+# class MyString < String
+# 	#Stringクラスを拡張するためのコードを書く
+# end
+# s = MyString.new('hello')
+# p s #=> 'Hello'
+# p s.class #=> "MyString"
+
+
+# class String
+# 	def shuffle
+# 		chars.shuffle.join
+# 	end
+# end
+
+# s = 'Hello, I am Alice.'
+# p s.shuffle
+
+# class User
+# 	def initialize(name)
+# 		@name = name
+# 	end
+
+# 	def hello
+# 		"Hello, #{@name}!"
+# 	end
+# end
+
+# #モンキーパッチをあたるためにUserクラスを再オープンする
+# class User
+# 	#既存のhelloメソッドはhello _originalとして呼び出せる様にしておく
+# 	alias hello_original hello
+
+# 	#helloメソッドにモンキーパッチを当てる（もともと実装されていたhelloメソッドも再利用する）
+# 	def hello
+# 		"#{hello_original}じゃなくて、#{@name}さん、こんにちは！"
+# 	end
+# end
+
+# user = User.new('tarou')
+# p user.hello
+# p user.hello_original
+
+# def display_name(object)
+# 	puts "Name is << #{object.name}>>"
+# end
+# #上記のメソッドは引数で渡されたオブジェクトがnameメソッドを持っていること(object.nameが呼び1出せること)を期待している。
+# #それ以外のことは何も気にしないので以下の様に全く別々のオブジェクトを渡すことができる
+# class User
+# 	def name
+# 		'Alice'
+# 	end
+# end
+
+# class Product
+# 	def name
+# 		'A great movie'
+# 	end
+# end
+
+
+# #UserクラスとPriductクラスはお互いに無関係なクラスだが、displeayUserfileメソッドは何も気にしない
+# user = User.new
+# p display_name(user)
+
+# product = Product.new
+# p display_name(product)
+
+# str = "I am Riu."
+# p str.split
+
+# p "1 23 456".split
+# class Object
+
+# 	def display_name(object)
+# 		if object.respond_to?(:name)
+# 			puts "Name is <<#{object.name}>>"
+# 		else
+# 			puts "No name."
+# 		end
+# 	end
+# end
+
+# 	s = 'Alice'
+# 	p s.respond_to?(:split) #=>true
+# 	p display_name(s)
+
+# 	n = "Riu"
+# 	p n.respond_to?(:name)
+# 	p display_name(n)
+
+# def add_ten(n)
+# 	#nが整数以外の場合にも対応するためto_iで整数に変換する
+# 	n.to_i + 10
+# end
+
+# #整数を渡す
+# p add_ten(1)
+
+# #文字列やnilを渡す
+# p add_ten('2') #=>12
+# p add_ten('-2')
+# p add_ten(nil) #=>10
+# p add_ten(0)
+# p add_ten(5)
+
+
+def add_numbers(a = 10,b = 0)
+	a + b
 end
-user = User.new
-user.hello #=> Error
 
-
+#引数の個数はゼロでも1個でも2個でも良い
+p add_numbers #=>0
+p add_numbers(1)
+p add_numbers(1,2)
+p add_numbers(1,5)
