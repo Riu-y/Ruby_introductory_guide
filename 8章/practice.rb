@@ -1031,6 +1031,254 @@ Sample::User::hello #=> "Hello, I am Alice"
 #普通の変数であっても::で呼び出せる
 s::upcase #=> "ABC"
 
+#-- 8.10 この章のまとめ
+
+モジュールの概要
+モジュールの用途は1つとは限らない
+継承を使わずにクラスにインスタントメソッドと追加、上書き
+複数のクラスに対して共通の特異メソッドを追加する（ミックスイン）
+クラス名や定数名音衝突を防ぐために名前空間を作れる
+関数的メソッドを定義する
+シングルトンオブジェクトの様に扱って設定値などを保持する
+
+module Greeter
+	def hello
+		'hello'
+	end
+end
+#クラスと違うところ
+モジュールからインスタンスを作成することはできない
+他のモジュールやクラスを継承することはできない
+
+
+モジュールのミックスイン（includeとextend）
+
+#モジュールに定義したメソッドをincludeすることでインスタンスメソッドとして使用できる
+module Loggable
+	#デフォルトはpublic
+	private
+	def log(text)
+		puts "[LOG]#{text}"
+	end
+end
+
+class Product
+	include Loggable
+
+	def title
+		log 'any'
+		'any'
+	end
+
+class User
+	def name
+		log 'any'
+		'Alice'
+	end
+end
+
+#extendすることでモジュールのメソッドを特異メソッド（クラス）としてミックスインする
+#exxtendしたモジュール内のメソッドをクラスメソッドとして使用できる
+module Loggable
+	#デフォルトはpublic
+	private
+	def log(text)
+		puts "[LOG]#{text}"
+	end
+end
+
+class Priduct
+	extend Loggable #
+
+	def self.create_products(names)
+		log 'create_products'
+	end
+end
+Product.crate_products([])
+Product.log('Hello.')
+
+#Enumerableモジュール
+# map selecrt find count ...etc
+[1,2,3].map { |n| n * 10}
+{a: 1, b: 2, c: 3 }.map { |k, v|[k, v * 10]}
+(1..3).map {|n| n * 10}
+
+#Comparableモジュールと<=>演算子
+
+#< <= == > >= between?
+class Tempo
+	include Comparable
+
+	attr_reader :bpm
+
+	def initialize(bpm)
+		@bpm = bpm
+	end
+
+	def <=>(other)
+		if other.is_a?(Tempo)
+			bpm <=> other.bpm
+		else
+			nil
+		end
+	end
+end
+
+t_120 = Tempo.new(120)
+t_180 = Tempo.new(180)
+
+p t_120 > t_180
+p t_120 <= t_180
+p t_120 == t_180
+
+#Kernelモジュール
+#puts p print require loop
+
+#モジュールとインスタンス変数
+#モジュールの内部で定義したメソッドの中でインスタンス変数を読み書きするとinclude先のクラスイオンスタンス変数を読み書きした事と同じになります。
+module NameChanger
+	def change_name
+		@name = 'アリス'
+	end
+end
+
+class User
+	include NameChanger
+
+	attr_reader :name
+
+	def initialize(name)
+		@name = name
+	end
+end
+user = User.new('alice')
+user.change_name
+user.name #=>"アリス"
+
+
+モジュールを利用した名前空間の作成
+
+module Baseball
+	class Second
+		def initialize(player, uniform_number)
+			@player = player
+			@uniform_number = uniform_number
+		end
+	end
+end
+
+module Clock
+	class Second
+		def initialize(digits)
+			@digits = digits
+		end
+	end
+end
+
+Baseball::Second.new('Alice',13)
+Clock::Second.NEW(13)
+
+#すでにBaseballモジュールが定義されている状況
+module Baseball
+end
+
+#ネストなすで名前付きのクラスを定義する
+#モジュール名::クラス名の形でクラスを定義できる
+class Basebal::Second
+	def initialize(player, uniform_number)
+		@player = player
+		@uniform_number
+	end
+end
+
+関数や定数を提供するモジュールの作成
+
+
+#モジュールに特異メソッドを定義する
+module Loggable
+	def self.log(text)
+		puts "[LOG] #{text}"
+	end
+end
+#他のクラスにミックスインしなくてもモジュール単体でそのメソッドを呼び出せる
+Loggable.log('Hello')
+
+module Loggable
+	class << self
+		def log(text)
+			puts "[LOG]#{text}"
+		end
+	end
+end
+
+#ミックスインと特異メソッドとしても使えるベンチなメソッドがmodule_function
+
+module Loggable
+	def log(text)
+		puts "[LOG]#{text}"
+	end
+	module_function :log
+end
+#モジュールの特異メソッドとして呼び出す
+Loggable.log('Hello')
+#Loggableモジュールをincludeしたクラスを定義する
+class Product
+	include Loggable
+
+	def title
+		log 'title is called'
+		'A great movie'
+	end
+end
+
+状態を保持するモジュールの作成
+
+モジュールに他のモジュールをincludeする関する高度な話題
+
+#モジュールに他のモジュールをincludeする
+module Greeting
+	def hello
+		'hello'
+	end
+end
+
+module Aisatu
+	include Greeting
+
+	def konnnitiwa
+		'こんにちは'
+	end
+end
+
+class User
+	include Aisatu
+end
+
+user = User.new
+user.konnnitiwa
+user.hello
+
+#prependでモジュールをミックスインする
+module A
+	def to_s
+		"<A> #{super}"
+	end
+end
+
+class Product
+	prepend A
+
+	def to_s
+		"<Product> #{super}"
+	end
+end
+
+product = Product.new
+product.to_s
+
+
+
+
 
 
 

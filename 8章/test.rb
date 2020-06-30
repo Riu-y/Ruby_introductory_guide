@@ -416,25 +416,50 @@
 # # 'Alice'.shuffle
 
 #StringShuffleモジュールを読み込む
-require './string_shuffle'
+# require './string_shuffle'
 
-#ここではまだshuffleメソッドが使えない
-#puts 'Alice'.shuffle
+# #ここではまだshuffleメソッドが使えない
+# #puts 'Alice'.shuffle
 
-#トップレベルでusingするとここからファイルの最後までshuffleメソッドが有効になる
-using SomeModule
-# puts 'Alice'.shuffle
+# #トップレベルでusingするとここからファイルの最後までshuffleメソッドが有効になる
+# using SomeModule
+# # puts 'Alice'.shuffle
 
-class User
-	def initialize(name)
-		@name = name
+# class User
+# 	def initialize(name)
+# 		@name = name
+# 	end
+
+# 	def shuffled_name
+# 		@name.shuffle
+# 	end
+# end
+# #他のファイルではshuffleメソッドは使えない
+# user = User.new('Alice')
+# puts user.shuffled_name
+# puts [1,2,3,4].shuffle
+
+class Tempo
+	include Comparable
+
+	attr_reader :bpm
+
+	def initialize(bpm)
+		@bpm = bpm
 	end
 
-	def shuffled_name
-		@name.shuffle
+	def <=>(other)
+		if other.is_a?(Tempo)
+			bpm <=> other.bpm
+		else
+			nil
+		end
 	end
 end
-#他のファイルではshuffleメソッドは使えない
-user = User.new('Alice')
-puts user.shuffled_name
-puts [1,2,3,4].shuffle
+
+t_120 = Tempo.new(120)
+t_180 = Tempo.new(180)
+
+p t_120 > t_180
+p t_120 <= t_180
+p t_120 == t_180
