@@ -167,27 +167,120 @@
 # repeat_proc = Proc.new {|text| text * 2 }
 # greeting(repeat_proc)
 
-#3種類のProcオブジェクトを受け取り、それぞれの挨拶文字列に適用するgreetingメソッド
-def greeting(proc_1,proc_2,proc_3)
-	puts proc_1.call('おはよう')
-	puts proc_2.call('こんにちは')
-	puts proc_3.call('こんばんは')
+# #3種類のProcオブジェクトを受け取り、それぞれの挨拶文字列に適用するgreetingメソッド
+# def greeting(proc_1,proc_2,proc_3)
+# 	puts proc_1.call('おはよう')
+# 	puts proc_2.call('こんにちは')
+# 	puts proc_3.call('こんばんは')
+# end
+
+# shuffle_proc = Proc.new { |text| text.chars.shuffle.join }
+# repeat_proc = Proc.new {|text| text * 2 }
+# question_proc = Proc.new {|text| "#{text}?" }
+
+# p greeting(shuffle_proc,repeat_proc,question_proc)
+
+# def greeting(proc1,proc2,proc3)
+# 	puts proc1.call('good morining')
+# 	puts proc2.call('Hello')
+# 	puts proc3.call('good evening')
+# end
+
+# shuffle_proc = Proc.new { |text| text.chars.shuffle.join }
+# adding_proc = Proc.new {|text| text + "John!" }
+# redefine_proc = Proc.new {|text| "Have a good day." }
+
+# p greeting(shuffle_proc,adding_proc,redefine_proc)
+
+
+# def judge(age)
+# 	#20より大きければtrueを返すProcオブジェクト
+# 	adult = Proc.new { |n| n > 20}
+# 	#20より小さければtrueを返すProcオブジェクト
+# 	child = Proc.new { |n| n < 20 }
+
+# 	case age
+# 	when adult
+# 		'大人です'
+# 	when child
+# 		'子供です'
+# 	else
+# 		'二十歳です'
+# 	end
+# end
+
+# p judge(25)
+# p judge(18)
+# p judge(20)
+
+# reverse_proc = Proc.new { |s| s.reverse }
+# p ['Ruby','Java','PHP'].map(&reverse_proc)
+
+# def judge(age)
+# 	adult = Proc.new { |n| n > 20}
+# 	child = Proc.new { |n| n < 20}
+# end
+
+# case ages
+# 	when adult
+# 		'大人です'
+# 	when child
+# 		'子供です'
+# 	else
+# 		'二十歳です'
+# 	end
+# end
+
+def generate_proc(array)
+	counter = 0
+	Proc.new do
+		counter += 10
+		array << counter
+	end
 end
 
-shuffle_proc = Proc.new { |text| text.chars.shuffle.join }
-repeat_proc = Proc.new {|text| text * 2 }
-question_proc = Proc.new {|text| "#{text}?" }
+values = []
+sample_proc = generate_proc(values)
+p values
 
-p greeting(shuffle_proc,repeat_proc,question_proc)
+sample_proc.call
+p values
 
-def greeting(proc1,proc2,proc3)
-	puts proc1.call('good morining')
-	puts proc2.call('Hello')
-	puts proc3.call('good evening')
+sample_proc.call
+p values
+
+def proc_return
+	#Proc.newでreturnを使う
+	f = Proc.new { |n| return * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret} "
 end
 
-shuffle_proc = Proc.new { |text| text.chars.shuffle.join }
-adding_proc = Proc.new {|text| text + "John!" }
-redefine_proc = Proc.new {|text| "Have a good day." }
+def lambda_return
+	#ラムダでreturnを使う
+	f = ->(n) {return n * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret}"
+end
 
-p greeting(shuffle_proc,adding_proc,redefine_proc)
+p proc_return
+p lambda_return
+
+def proc_break
+	#proc.newでbreakを使う
+	f = Proc.new {|n| break * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret}"
+end
+
+def lambda_break
+	#ラムダでbreakを使う
+	f = ->(n) { break n * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret}"
+end
+
+p proc_break
+p lambda_break
+
+

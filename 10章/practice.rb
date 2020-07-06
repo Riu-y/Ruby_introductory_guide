@@ -345,6 +345,7 @@ def self.loud(level)
 	end
 end
 
+#メソッド事に改行してわかりやすくする
 def self.loud(level)
 	->(words) do
 		words
@@ -354,7 +355,127 @@ def self.loud(level)
 	end
 end
 
+# -- Proc オブジェクトについてもっと詳しく--
+add_proc = Proc.new { |a, b| a + b }
+
+#callメソッドを使う
+add_proc.call(10,20) #=> 30
+#yieldメソッドを使う
+add_proc.yield(10,20)
+# .()を使う
+add_proc.(10,20)
+
+#[]を使う
+add_proc[10,20]
+
+#===を使って呼び出す
+add_proc === [10,20]
+
+#case文のwhen節でProcオブジェクトを使える様にするため。以下のコードはProcオブジェクトとcase文を組み合わせて大人、子供、二十歳のいずれかを判断する例
+
+def judge(age)
+	#20より大きければtrueを返すProcオブジェクト
+	adult = Proc.new { |n| n > 20}
+	#20より小さければtrueを返すProcオブジェクト
+	child = Proc.new { |n| n < 20 }
+
+	case age
+	when adult
+		'大人です'
+	when child
+		'子供です'
+	else
+		'二十歳です'
+	end
+end
+judge(25)
+judge(18)
+judge(20)
+
+# -- &とto_procメソッド --
+reverse_proc = Proc.new { |s| s.reverse }
+#mapメソッドにブロックを渡す川栄にProcオブジェクトを渡す*ただし&必要
+['Ruby','Java','Perl'].map(&reverse_proc) #
+#&の役割はProcオブジェクトをブロックと認識させるだけではない
+#厳密には右辺のオブジェクトに対してto_procメソッドを呼び出し、その戻り値として得られたProcオブジェクトをブロックを利用するメソッドに与える
 
 
+#RubyにはProcオブジェクト以外でto_procメソッドを持つものがある。
+#1つがシンボル
+split_proc = :split.to_proc
+#:splitというシンボルをto_procへ変換する
 
+#引数が1つの場合は'a-b-c-d', "e"]
+aplit_proc.call('a-b-c-d e')
 
+#引数を2つ渡すと1つ目の引数はレシーバのままだが2つ目の引数がシンボルでしてしたメソッドの第一引数になる
+split_proc.call('a-b-c-d e','-')
+
+#引数が3つの場合は 'a-b-c-d e'.split('-', 3)と同じ（指定された文字で分割する）
+split_proc.call('a-b-c-d e','-', 3)
+
+['ruby', 'java', 'perl'].map { |s| s.upcase }
+['ruby', 'java', 'perl'].map(&:upcase)
+
+# 1.&:upcaseはシンボルの:upcaseに対してto_procメソッドを呼び出す
+# 2.シンボルの:upcaseがprocオブジェクトに変換され、mapメソッドにブロックとして渡される
+# 3.上記の2で作成したProcオブジェクトはmapメソッドから配列の各要素を実行時の第1引数として受け取る
+# 4.mapメソッドはProcオブジェクトの戻り値を順に新しい配列に詰め込む
+# 5.上記の3と4のコンビネーションにpandas pり配列の各様が大文字に変換された新しい配列がmapメソッドの戻り値になる
+
+#Procオブジェクトとクロージャ
+# メソッドの引数やメソッドのローカル変数は通常、メソッドの実行が終わると参照できなくなる
+# しかし、Procオブジェクトないで引数やローカル変数を参照するとメソッドの実行が完了してもProcオブジェクトは引き続き引数やローカル変数にアクセスし続けることができる
+
+def generate_proc(array)
+	counter = 0
+	#Procオブジェクトをメソッドの戻り値とする
+	Proc.new do
+		#ローカル変数のcounterを加算する
+		counter += 10
+		#メソッド引数のarrayにcounterの値を追加する
+		array << counter
+	end
+end
+
+value = []
+sample_proc = generate_proc(values)
+value
+
+sample_proc.call
+p value
+
+#ややこしい2つ目のProc.newとラムダの違い
+def proc_return
+	#Proc.newでreturnを使う
+	f = Proc.new { |n| return * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret} "
+end
+
+def lambda_return
+	#ラムダでreturnを使う
+	f = ->(n) {return n * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret}"
+end
+
+proc_break
+lambda_break
+
+def proc_return
+	#proc.newでbreakを使う
+	f = Proc.new {|n| break * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret}"
+end
+
+def lambda_break
+	#ラムダでbreakを使う
+	f = ->(n) {break n * 10 }
+	ret = [1,2,3].map(&f)
+	"ret: #{ret}"
+end
+
+proc_break
+lambda_break 
