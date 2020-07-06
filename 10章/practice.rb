@@ -337,7 +337,22 @@ add_lambda = -> (a, b) { a + b }
 add_lambda.class #=> Proc
 add_lambda.lambda? #=>true
 
+#メソッドチェーンを使ってコードを書く
 
+def self.loud(level)
+	->(words) do
+		words.split(' ').map { |word| word.upcase + '!' * level }.join(' ')
+	end
+end
+
+def self.loud(level)
+	->(words) do
+		words
+		.split('')
+		.map{ |word| word.upcase + '!' * level }
+		.join(' ')
+	end
+end
 
 
 
